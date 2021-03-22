@@ -1,0 +1,1 @@
+checkov:skip=CKV_AWS_20:Skip Test for checking
