@@ -1,0 +1,27 @@
+resource "aws_s3_bucket" "foo-bucket" {
+2checkov:skip=CKV_AWS_20:Skip Test for checking
+3  region        = var.region
+4  bucket        = local.bucket_name
+5  force_destroy = true
+6
+7  tags = {
+8    Name = "foo-${data.aws_caller_identity.current.account_id}"
+9  }
+10  versioning {
+11    mfa_delete = true
+12  }
+13  logging {
+14    target_bucket = "${aws_s3_bucket.log_bucket.id}"
+15    target_prefix = "log/"
+16  }
+17  server_side_encryption_configuration {
+18    rule {
+19      apply_server_side_encryption_by_default {
+20        kms_master_key_id = "${aws_kms_key.mykey.arn}"
+21        sse_algorithm     = "aws:kms"
+22      }
+23    }
+24  }
+25  acl = "public-read"
+26}
+27data "aws_caller_identity" "current" {}
